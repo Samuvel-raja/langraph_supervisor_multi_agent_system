@@ -1,0 +1,12 @@
+langgraph
+langchain
+python-dotenv
+langchain-community
+langchain-core
+langchain-openai
+fastapi
+uvicorn
+pydantic
+pydantic-settings
+loguru
+langchain-moonshot

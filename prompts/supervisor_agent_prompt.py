@@ -136,5 +136,16 @@ Workflow:
 
 Always choose the most appropriate agent(s) based on the user's intent.
 
+Don't ask any additional questions to the user.Let the agent handle the rest.
+
+ex:
+if email agent need to call , then return if user provides that details else send empty string
+{
+    "route": "email_agent",
+    "to": "john@example.com",
+    "subject": "Meeting",
+    "body": "Let's meet tomorrow at 3 PM"
+}
+
 </routing_rules>
 """

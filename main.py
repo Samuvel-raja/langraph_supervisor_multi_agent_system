@@ -10,7 +10,13 @@ if __name__ == "__main__":
             HumanMessage(
                 content="i want to send a email to john@example.com"
             )
-        ]
+        ],
+        "goto": "",
+        "email": {
+            "to": "",
+            "subject": "",
+            "body": ""
+        },
     })
     print(result)
 

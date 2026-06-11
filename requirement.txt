@@ -11,3 +11,6 @@ pydantic-settings
 loguru
 langchain-moonshot
 langchain-mcp-adapters
+authlib
+itsdangerous
+mongoengine

@@ -1,9 +1,10 @@
 from langgraph.types import interrupt
-from agents.email_agent import email_agent
+from agents.email_agent import email_agent_funct
 from graph.state import OrchestratorState
 
-def email_agent_node(state: OrchestratorState):
-    result = email_agent.invoke(state)
+async def email_agent_node(state: OrchestratorState):
+    email_agent = await email_agent_funct()
+    result = await email_agent.invoke(state)
     email_data = result.get("email", {})
     to = email_data.get("to", "")
     subject = email_data.get("subject", "")

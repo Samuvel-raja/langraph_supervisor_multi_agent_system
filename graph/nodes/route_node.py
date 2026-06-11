@@ -1,6 +1,6 @@
 from graph.state import OrchestratorState
 
-def route_node(state: OrchestratorState) -> str:
+async def route_node(state: OrchestratorState) -> str:
     route = state.goto
     if route == "email_agent":
         return "email_agent"

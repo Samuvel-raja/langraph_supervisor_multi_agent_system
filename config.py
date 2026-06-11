@@ -7,5 +7,7 @@ class Settings(BaseSettings):
     langchain_tracing_v2: str
     langchain_project: str
     langchain_api_key: str
+    google_client_id: str
+    google_client_secret: str
 
 settings = Settings()

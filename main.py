@@ -1,9 +1,12 @@
 from dotenv import load_dotenv
+from contextlib import asynccontextmanager
+
 load_dotenv()
 
 from graph.graph import graph_builder
 from langchain_core.messages import HumanMessage
 from fastapi import FastAPI
+from utils.db import connect_db
 
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
@@ -11,7 +14,14 @@ from routes.auth_service_route import auth_router
 import uvicorn
 
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    connect_db()
+    yield
+
+
+app = FastAPI(lifespan =lifespan)
+
 
 app.add_middleware(
     SessionMiddleware,

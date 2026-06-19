@@ -1,24 +1,26 @@
-from authlib.integrations.starlette_client import OAuth, OAuthError
+
 from models.user_model import User
-from fastapi.responses import JSONResponse
 
 class User_service:
-   async def create_user_service(self, user: dict):
+   @staticmethod
+   def create_user(data):
       try:
-         existing_user = User.objects(email=user.get("email"))
+         google_id = data.get("google_id","")
+         existing_user = User.objects(google_id=google_id).first()
          if existing_user:
-            return JSONResponse({
-               "status": 400,
-               "message": "User already exists"
-            })
-         user = User(**user)
+            access_token = data.get("access_token")
+            refresh_token = data.get("refresh_token")
+            existing_user.access_token=access_token
+            existing_user.refresh_token=refresh_token
+            existing_user.save()
+            return {
+               "message":"User updated successfully"
+            }
+         user = User(**data)
+         print("user created success")
          user.save()
-         return JSONResponse({
-            "status": 201,
-            "message": "User created successfully"
-         })
+         return {
+            "message":"User created successfully"
+         }
       except Exception as e:
-         return JSONResponse({
-            "status": 500,
-            "message": str(e)
-         })
+         raise e

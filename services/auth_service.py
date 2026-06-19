@@ -16,7 +16,7 @@ class Auth_Service:
             client_id=settings.google_client_id,
             client_secret=self.google_client_secret,
             client_kwargs={
-                'scope': 'email openid profile',
+                'scope': 'email openid profile https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/gmail.modify',
                 'redirect_uri': 'http://localhost:8000/auth'
             }
         )
@@ -40,7 +40,15 @@ class Auth_Service:
         user = token.get('userinfo')
         if user:
             request.session['user'] = dict(user)
-            await self.user_service.create_user_service(user)
+            payload = {
+                "google_id":user.sub,
+                "name":user.name,
+                "email":user.email,
+                "access_token":token.get("access_token"),
+                "refresh_token":token.get("refresh_token"),
+                "expires_in":token.get("expires_in")
+            }
+            self.user_service.create_user(payload)
         return {
             "user":token
         }

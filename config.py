@@ -9,5 +9,9 @@ class Settings(BaseSettings):
     langchain_api_key: str
     google_client_id: str
     google_client_secret: str
+    mongo_uri:str
+    mongo_db_name:str
+    algorithm:str
+    secret_key:str
 
 settings = Settings()

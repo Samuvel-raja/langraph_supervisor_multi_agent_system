@@ -3,6 +3,7 @@ from config import settings
 from fastapi import Request
 from fastapi.responses import JSONResponse
 from services.user_service import User_service
+import jwt
 
 class Auth_Service:
     def __init__(self):
@@ -10,16 +11,29 @@ class Auth_Service:
         self.google_client_secret=settings.google_client_secret
         self.oauth = OAuth()
         self.user_service = User_service()
+        self.secret_key = settings.secret_key
+        self.algorithm = settings.algorithm
         self.oauth.register(
             name='google',
             server_metadata_url='https://accounts.google.com/.well-known/openid-configuration',
             client_id=settings.google_client_id,
             client_secret=self.google_client_secret,
             client_kwargs={
-                'scope': 'email openid profile',
+                'scope': 'email openid profile https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/gmail.modify',
                 'redirect_uri': 'http://localhost:8000/auth'
             }
         )
+    def create_auth_token(self,data):
+        token = jwt.encode(
+            data,
+            self.secret_key,
+            algorithm=self.algorithm
+        )
+        return token
+    
+    def verify_auth_token(self,data):
+        return jwt.verify(data,self.secret_key,algorithms=[self.algorithm])
+
 
     async def google_login_service(self,request,url):
         try:
@@ -38,9 +52,27 @@ class Auth_Service:
                 "message":e
             }
         user = token.get('userinfo')
+        access_token=token.get("access_token")
+        refresh_token=token.get("refresh_token")
+        expires_in=token.get("expires_in")
         if user:
             request.session['user'] = dict(user)
-            await self.user_service.create_user_service(user)
+            payload = {
+                "google_id":user.sub,
+                "name":user.name,
+                "email":user.email,
+                "access_token":access_token,
+                "refresh_token":refresh_token,
+                "expires_in":expires_in
+            }
+            jwt_payload ={
+                "google_id":user.sub,
+                "name":user.name,
+                "email":user.email,
+            }
+            auth_token = self.create_auth_token(jwt_payload)
+            payload["auth_token"] = auth_token
+            self.user_service.create_user(payload)
         return {
             "user":token
         }

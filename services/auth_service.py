@@ -65,6 +65,8 @@ class Auth_Service:
                 "refresh_token":refresh_token,
                 "expires_in":expires_in
             }
+            auth_token = self.create_auth_token(payload)
+            payload["auth_token"] = auth_token
             self.user_service.create_user(payload)
         return {
             "user":token

@@ -8,5 +8,6 @@ class User(Document):
     access_token=StringField(required=True)
     refresh_token=StringField(required=True)
     expires_in=IntField(required=True)
+    auth_token=StringField(required=True)
     created_at = DateTimeField(default=lambda: datetime.now(timezone.utc))
     updated_at = DateTimeField(default=lambda: datetime.now(timezone.utc))

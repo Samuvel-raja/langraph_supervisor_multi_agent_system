@@ -14,3 +14,4 @@ langchain-mcp-adapters
 authlib
 itsdangerous
 mongoengine
+PyJWT

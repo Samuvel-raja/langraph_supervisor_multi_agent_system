@@ -3,6 +3,7 @@ from config import settings
 from fastapi import Request
 from fastapi.responses import JSONResponse
 from services.user_service import User_service
+import jwt
 
 class Auth_Service:
     def __init__(self):
@@ -10,6 +11,8 @@ class Auth_Service:
         self.google_client_secret=settings.google_client_secret
         self.oauth = OAuth()
         self.user_service = User_service()
+        self.secret_key = settings.secret_key
+        self.algorithm = settings.algorithm
         self.oauth.register(
             name='google',
             server_metadata_url='https://accounts.google.com/.well-known/openid-configuration',
@@ -20,6 +23,17 @@ class Auth_Service:
                 'redirect_uri': 'http://localhost:8000/auth'
             }
         )
+    def create_auth_token(self,data):
+        token = jwt.encode(
+            data,
+            self.secret_key,
+            algorithm=self.algorithm
+        )
+        return token
+    
+    def verify_auth_token(self,data):
+        return jwt.verify(data,self.secret_key,algorithms=[self.algorithm])
+
 
     async def google_login_service(self,request,url):
         try:
@@ -38,15 +52,18 @@ class Auth_Service:
                 "message":e
             }
         user = token.get('userinfo')
+        access_token=token.get("access_token")
+        refresh_token=token.get("refresh_token")
+        expires_in=token.get("expires_in")
         if user:
             request.session['user'] = dict(user)
             payload = {
                 "google_id":user.sub,
                 "name":user.name,
                 "email":user.email,
-                "access_token":token.get("access_token"),
-                "refresh_token":token.get("refresh_token"),
-                "expires_in":token.get("expires_in")
+                "access_token":access_token,
+                "refresh_token":refresh_token,
+                "expires_in":expires_in
             }
             self.user_service.create_user(payload)
         return {

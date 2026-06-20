@@ -11,5 +11,7 @@ class Settings(BaseSettings):
     google_client_secret: str
     mongo_uri:str
     mongo_db_name:str
+    algorithm:str
+    secret_key:str
 
 settings = Settings()

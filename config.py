@@ -13,5 +13,6 @@ class Settings(BaseSettings):
     mongo_db_name:str
     algorithm:str
     secret_key:str
+    base_url:str
 
 settings = Settings()

@@ -20,7 +20,7 @@ class Auth_Service:
             client_secret=self.google_client_secret,
             client_kwargs={
                 'scope': 'email openid profile https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/gmail.modify',
-                'redirect_uri': 'http://localhost:8000/auth'
+                'redirect_uri': f'{settings.base_url}/auth'
             }
         )
     def create_auth_token(self,data):

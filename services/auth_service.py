@@ -65,7 +65,12 @@ class Auth_Service:
                 "refresh_token":refresh_token,
                 "expires_in":expires_in
             }
-            auth_token = self.create_auth_token(payload)
+            jwt_payload ={
+                "google_id":user.sub,
+                "name":user.name,
+                "email":user.email,
+            }
+            auth_token = self.create_auth_token(jwt_payload)
             payload["auth_token"] = auth_token
             self.user_service.create_user(payload)
         return {

@@ -37,7 +37,6 @@ class User_service:
    def get_user_by_auth_token(auth_token):
       try:
          user = User.objects(auth_token=auth_token).first()
-         print("user", user)
          return {
             "email":user.email,
             "access_token":user.access_token,

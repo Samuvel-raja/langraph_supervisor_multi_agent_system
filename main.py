@@ -11,6 +11,8 @@ from utils.db import connect_db
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 from routes.auth_service_route import auth_router
+from routes.user_router import router as user_router
+
 import uvicorn
 
 
@@ -35,6 +37,7 @@ app.add_middleware(
     allow_headers=["*"], 
 )
 app.include_router(auth_router)
+app.include_router(user_router)
 
 
 @app.get("/health")

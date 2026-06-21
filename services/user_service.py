@@ -24,3 +24,24 @@ class User_service:
          }
       except Exception as e:
          raise e
+   
+   @staticmethod
+   def get_user_by_google_id(google_id):
+      try:
+         user = User.objects(google_id=google_id).first()
+         return user
+      except Exception as e:
+         raise e
+
+   @staticmethod
+   def get_user_by_auth_token(auth_token):
+      try:
+         user = User.objects(auth_token=auth_token).first()
+         print("user", user)
+         return {
+            "email":user.email,
+            "access_token":user.access_token,
+            "refresh_token":user.refresh_token
+         }
+      except Exception as e:
+         raise e
